@@ -1,0 +1,23 @@
+name: Habilitar Auto-merge automáticamente
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  activar-automerge:
+    runs-on: ubuntu-latest
+    # Permisos necesarios para que el bot pueda aceptar el PR
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - name: Activar Auto-merge mediante GitHub CLI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        # El comando gh activa el auto-merge en modo "merge" tradicional. 
+        # Si prefieres squash, cambia --merge por --squash
+        run: gh pr merge --auto --merge "$PR_URL"
